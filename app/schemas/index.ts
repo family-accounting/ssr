@@ -16,7 +16,8 @@ export const registerSchema = z.object({
 export const groupSchema = z.object({
     id: z.uuid(),
     title: z.string().min(3),
-    description: z.string().min(3)
+    description: z.string().min(3),
+    owner_id: z.uuid()
 })
 export const createGroupSchema = groupSchema.omit({ id: true })
 export const updateGroupSchema = groupSchema.partial().extend({ id: z.uuid() })

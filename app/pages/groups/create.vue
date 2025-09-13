@@ -6,11 +6,13 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 definePageMeta({
     layout: 'default'
 })
+const supabase = useSupabaseClient()
+const { data: { user } } = await supabase.auth.getUser()
 const createGroupData = reactive<Partial<ICreateGroup>>({
     title: '',
-    description: ''
-})
-const supabase = useSupabaseClient()
+    description: '',
+    owner_id: user?.id
+}) as ICreateGroup
 const toast = useToast()
 const loading = ref(false)
 const router = useRouter()

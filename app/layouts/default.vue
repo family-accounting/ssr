@@ -3,9 +3,9 @@
         <div class="container mx-auto">
             <ul class="flex gap-4">
                 <ULink to="/">Home</ULink>
-                <ULink to="/groups">Groups</ULink>
-                <ULink to="/register">Register</ULink>
-                <ULink to="/login">Login</ULink>
+                <ULink to="/register" v-if="!user">Register</ULink>
+                <ULink to="/login" v-if="!user">Login</ULink>
+                <ULink to="/logout" v-if="user" @click="logout">Logout</ULink>
             </ul>
         </div>
     </nav>
@@ -13,3 +13,12 @@
         <slot />
     </main>
 </template>
+<script setup lang="ts">
+const supabase = useSupabaseClient()
+const { data: { user } } = await supabase.auth.getUser()
+const router = useRouter()
+const logout = async () => {
+    await supabase.auth.signOut()
+    router.push('/login')
+}
+</script>

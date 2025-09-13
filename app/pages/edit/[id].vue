@@ -26,7 +26,7 @@ const onSubmit = async (event: FormSubmitEvent<IUpdateGroup>) => {
         toast.add({ title: `Error: ${error.code}`, description: error.message, color: 'error' })
     } else {
         toast.add({ title: 'Success', description: 'Group created successfully', color: 'success' })
-        router.push('/groups')
+        router.push('/')
     }
 }
 </script>

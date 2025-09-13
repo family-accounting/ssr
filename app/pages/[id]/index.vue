@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { IGroup } from '~/types';
+import { userSchema } from '~/schemas';
+import type { IGroup, IUser } from '~/types';
 
 definePageMeta({
     layout: 'default'
@@ -17,7 +18,7 @@ if (error) {
 } else {
     groupData.value = data
 }
-
+const usersData = ref<Partial<IUser>[]>([])
 </script>
 <template>
     <section class="py-12">
@@ -26,7 +27,9 @@ if (error) {
         <h1>{{ groupData.title }}</h1>
         <p>{{ groupData.description }}</p>
         <p>{{ groupData.owner_id }}</p>
-
+        <p>{{ groupData }}</p>
     </UCard>
+
+ 
  </section>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ITagList } from "~/schemas";
+import type { ICategoryList } from "~/schemas";
 
 definePageMeta({
   layout: "group",
@@ -8,10 +8,10 @@ definePageMeta({
 const supabase = useSupabaseClient();
 const route = useRoute();
 const groupId = computed(() => route.params.group_id as string);
-const tags = ref<ITagList>([]);
+const categories = ref<ICategoryList>([]);
 const toast = useToast();
 const { data, error } = await supabase
-  .from("tags")
+  .from("categories")
   .select("*")
   .eq("group_id", groupId.value);
 if (error) {
@@ -21,29 +21,32 @@ if (error) {
     color: "error",
   });
 } else {
-  tags.value = data;
+  categories.value = data;
 }
 </script>
 <template>
   <section class="py-12">
     <UContainer>
-      <h4 class="mb-4">Tags</h4>
+      <h4 class="mb-4">Categories</h4>
       <UButton
-        :to="{ name: 'group_id-tags-create', params: { group_id: groupId } }"
+        :to="{
+          name: 'group_id-categories-create',
+          params: { group_id: groupId },
+        }"
         variant="solid"
         color="primary"
         :ui="{ base: 'cursor-pointer' }"
-        >Create Tag</UButton
+        >Create Category</UButton
       >
       <USeparator :ui="{ root: 'my-4' }" />
       <div class="flex flex-wrap gap-4 mt-4">
         <UBadge
-          v-for="tag in tags"
-          :key="tag.id"
-          :label="tag.name"
+          v-for="category in categories"
+          :key="category.id"
+          :label="category.name"
           color="warning"
         >
-          {{ tag.name }}
+          {{ category.name }}
         </UBadge>
       </div>
     </UContainer>

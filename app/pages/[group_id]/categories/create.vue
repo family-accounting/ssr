@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { ICreateTag } from "~/schemas";
-import { createTagSchema } from "~/schemas";
+import type { ICreateCategory } from "~/schemas";
+import { createCategorySchema } from "~/schemas";
 import type { FormSubmitEvent } from "@nuxt/ui";
 
 definePageMeta({
@@ -9,18 +9,16 @@ definePageMeta({
 
 const supabase = useSupabaseClient();
 const route = useRoute();
-const tagData = ref<ICreateTag>({
+const categoryData = ref<ICreateCategory>({
   group_id: String(route.params.group_id),
-} as ICreateTag);
+} as ICreateCategory);
 const toast = useToast();
 const loading = ref(false);
 const router = useRouter();
-const onSubmit = async (event: FormSubmitEvent<ICreateTag>) => {
+const onSubmit = async (event: FormSubmitEvent<ICreateCategory>) => {
   loading.value = true;
-  const obj: ICreateTag = { ...tagData.value, ...event.data };
-  console.log("🚀 ~ onSubmit ~ obj:", obj);
-
-  const { error } = await supabase.from("tags").insert(obj);
+  const obj: ICreateCategory = { ...categoryData.value, ...event.data };
+  const { error } = await supabase.from("categories").insert(obj);
   if (error) {
     toast.add({
       title: `Error: ${error.code}`,
@@ -30,12 +28,12 @@ const onSubmit = async (event: FormSubmitEvent<ICreateTag>) => {
   } else {
     toast.add({
       title: "Success",
-      description: "Tag created successfully",
+      description: "Category created successfully",
       color: "success",
     });
 
     router.push({
-      name: "group_id-tags",
+      name: "group_id-categories",
       params: {
         group_id: route.params.group_id,
       },
@@ -48,14 +46,14 @@ const onSubmit = async (event: FormSubmitEvent<ICreateTag>) => {
   <section class="py-12">
     <UContainer>
       <UForm
-        id="create-tag-form"
-        :schema="createTagSchema"
-        :state="tagData"
+        id="create-category-form"
+        :schema="createCategorySchema"
+        :state="categoryData"
         class="space-y-4"
         @submit.prevent="onSubmit"
       >
         <UFormField label="Name" name="name">
-          <UInput v-model="tagData.name" :ui="{ root: 'w-full' }" />
+          <UInput v-model="categoryData.name" :ui="{ root: 'w-full' }" />
         </UFormField>
         <UButton
           type="submit"
@@ -65,7 +63,7 @@ const onSubmit = async (event: FormSubmitEvent<ICreateTag>) => {
           block
           :ui="{ base: 'cursor-pointer' }"
         >
-          {{ loading ? "please wait..." : "Create Tag" }}
+          {{ loading ? "please wait..." : "Create Category" }}
         </UButton>
       </UForm>
     </UContainer>

@@ -1,26 +1,22 @@
 <template>
   <nav class="py-4 border-b">
-    <div class="container mx-auto">
+    <div class="container mx-auto flex justify-between items-center">
       <ul class="flex gap-4">
         <ULink to="/">Home</ULink>
         <template v-if="user">
-          <ULink :to="{ name: 'group_id-tags', params: { group_id: groupId } }"
-            >Tags</ULink
-          >
-          <ULink
-            :to="{ name: 'group_id-categories', params: { group_id: groupId } }"
-            >Categories</ULink
-          >
+          <ULink :to="{ name: 'group_id-tags', params: { group_id: groupId } }">Tags</ULink>
+          <ULink :to="{ name: 'group_id-categories', params: { group_id: groupId } }">Categories</ULink>
           <!-- <ULink :to="{ name: 'group_id-transactions', params: { group_id: groupId } }">Transactions</ULink> -->
           <!-- <ULink :to="{ name: 'group_id-invitations', params: { group_id: groupId } }">Invitations</ULink> -->
 
-          <ULink to="/logout" @click="logout">Logout</ULink>
+          <UButton type="button" variant="link" :ui="{ base: 'cursor-pointer' }" @click="logout">Logout</UButton>
         </template>
         <template v-else>
           <ULink to="/register">Register</ULink>
           <ULink to="/login">Login</ULink>
         </template>
       </ul>
+      <ColorModeButton />
     </div>
   </nav>
   <main>

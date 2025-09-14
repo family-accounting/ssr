@@ -1,17 +1,18 @@
 <template>
   <nav class="py-4 border-b">
-    <div class="container mx-auto">
+    <div class="container mx-auto flex justify-between items-center">
       <ul class="flex gap-4">
         <ULink to="/">Home</ULink>
         <template v-if="user">
           <ULink to="/create">Create Group</ULink>
-          <ULink to="/logout" @click="logout">Logout</ULink>
+          <UButton type="button" variant="link" :ui="{ base: 'cursor-pointer' }" @click="logout">Logout</UButton>
         </template>
         <template v-else>
           <ULink to="/register">Register</ULink>
           <ULink to="/login">Login</ULink>
         </template>
       </ul>
+      <ColorModeButton />
     </div>
   </nav>
   <main class="container mx-auto">

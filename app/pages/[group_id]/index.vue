@@ -91,6 +91,11 @@ if (transactionsError) {
 }
 
 const transactionData = ref<Partial<ITransaction>>({} as ITransaction);
+
+const types = ref([
+  { value: "income", label: "Income" },
+  { value: "expense", label: "Expense" },
+]);
 </script>
 <template>
   <section class="py-12">
@@ -127,10 +132,12 @@ const transactionData = ref<Partial<ITransaction>>({} as ITransaction);
         />
       </UFormField>
       <UFormField label="Type" name="type">
-        <USelectMenu
+        <USelect
           v-model="transactionData.type"
-          :items="['income', 'expense']"
+          :items="types"
           :ui="{ base: 'w-full' }"
+          value-key="value"
+          label-key="label"
         />
       </UFormField>
       <UFormField label="Description" name="description">

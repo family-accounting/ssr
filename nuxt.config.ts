@@ -13,5 +13,5 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-lodash'
   ],
-
+ssr: false,
 })

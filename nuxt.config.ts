@@ -11,7 +11,15 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/supabase',
     '@vueuse/nuxt',
-    'nuxt-lodash'
+    'nuxt-lodash',
+    '@compodium/nuxt',
   ],
-ssr: false,
+  ssr: false,
+  ui: {
+    theme: {
+      defaultVariants: {
+        size: 'lg'
+      }
+    }
+  }
 })

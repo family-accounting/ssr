@@ -30,7 +30,7 @@ const onSubmit = async (event: FormSubmitEvent<ICreateGroup>) => {
 <template>
  <section class="py-12">
     <UCard>
-        <UForm id="create-group-form" :schema="createGroupSchema" :state="createGroupData" class="space-y-4" @submit="onSubmit">
+        <UForm id="create-group-form" :schema="createGroupSchema" :state="createGroupData" class="space-y-4" @submit.prevent="onSubmit">
             <UFormField label="Title" name="title">
                 <UInput v-model="createGroupData.title" :ui="{ root: 'w-full' }" />
             </UFormField>

@@ -10,6 +10,8 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@nuxt/ui',
     '@nuxtjs/supabase',
+    '@vueuse/nuxt',
+    'nuxt-lodash'
   ],
 
 })

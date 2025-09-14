@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { IGroup } from '~/types';
+import type { IGroupList, IGroup } from '~/schemas';
 
 const supabase = useSupabaseClient()
-const groups = ref<IGroup[]>([])
+const groups = ref<IGroupList>([])
+
+
 const fetchGroups = async () => {
     const { data, error }: { data: IGroup[] | null, error: any } = await supabase.from('groups').select('*')
     if (error) {
@@ -42,9 +44,9 @@ const deleteGroup = async (id: string) => {
                 <p>{{ group.description }}</p>
                 <template #footer>
                     <UButton icon="i-heroicons-eye" type="button" variant="solid" color="primary"
-                        :to="`/${group.id}`">View</UButton>
+                        :to="{name: 'group_id', params: {group_id: group.id}}">View</UButton>
                     <UButton icon="i-heroicons-pencil" type="button" variant="solid" color="primary"
-                        :to="`/edit/${group.id}`">Edit
+                        :to="{name: 'edit-id', params: {id: group.id}}">Edit
                     </UButton>
                     <UButton icon="i-heroicons-trash" type="button" :ui="{base: 'cursor-pointer'}" variant="solid" color="error"
                         @click="openDeleteModal(group)">Delete

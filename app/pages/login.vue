@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
-import type { loginSchema } from '~/schemas'
+import { loginSchema } from '~/schemas'
 import type { ILogin } from '~/types'
 definePageMeta({
     layout: 'auth'
 })
 
 const loginData = reactive<Partial<ILogin>>({
-    email: 'maghami.a1987@gmail.comc',
+    email: 'maghami.a1987@gmail.com',
     password: '18db@d12'
 })
 const supabase = useSupabaseClient()

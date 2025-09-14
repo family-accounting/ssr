@@ -93,8 +93,8 @@ if (transactionsError) {
 const transactionData = ref<Partial<ITransaction>>({} as ITransaction);
 
 const types = ref([
-  { value: "income", label: "Income" },
-  { value: "expense", label: "Expense" },
+  { value: "income", label: "واریز" },
+  { value: "expense", label: "برداشت" },
 ]);
 </script>
 <template>

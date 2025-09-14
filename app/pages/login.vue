@@ -43,7 +43,7 @@ const onSubmit = async (event: FormSubmitEvent<ILogin>) => {
             </UFormField>
         </UForm>
         <template #footer>
-            <UButton form="login-form" type="submit" variant="solid" color="primary" :loading="loading" block>
+            <UButton form="login-form" type="submit" variant="solid" color="primary" :loading="loading" block :ui="{ base: 'cursor-pointer' }">
                 {{ loading ? 'please wait...' : 'Login' }}
             </UButton>
             <USeparator orientation="horizontal" type="dashed" :ui="{ root: '' }" />

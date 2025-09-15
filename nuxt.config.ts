@@ -11,8 +11,9 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/supabase',
     '@vueuse/nuxt',
-    'nuxt-lodash',
     '@compodium/nuxt',
+    '@pinia/nuxt',
+    'nuxt-typed-router',
   ],
 
 })

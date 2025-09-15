@@ -13,9 +13,8 @@ const isDark = computed({
 
 <template>
     <ClientOnly v-if="!colorMode?.forced">
-        <UButton
-type="button" :ui="{ base: 'cursor-pointer' }" :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'" color="neutral" variant="link"
-            @click="isDark = !isDark" />
+        <UButton type="button" :ui="{ base: 'cursor-pointer' }" :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
+            color="neutral" variant="link" @click="isDark = !isDark" />
         <template #fallback>
             <div class="size-8" />
         </template>

@@ -132,8 +132,9 @@ const onSubmit = async (event: FormSubmitEvent<ITransaction>) => {
           <UInput type="number" v-model="transactionData.amount" :ui="{ root: 'w-full' }" />
         </UFormField>
         <UFormField label="Type" name="type">
-          <USelect v-model="transactionData.type" :items="types" :ui="{ base: 'w-full' }" value-key="value"
-            label-key="label" />
+
+          <URadioGroup v-model="transactionData.type" :items="types" value-key="value" label-key="label"
+            orientation="horizontal" />
         </UFormField>
         <UFormField label="Description" name="description">
           <UInput v-model="transactionData.description" :ui="{ root: 'w-full' }" />

@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     '@compodium/nuxt',
     '@pinia/nuxt',
     'nuxt-typed-router',
+    '@regle/nuxt',
   ],
 
 })

@@ -1,32 +1,32 @@
 <template>
-<div class="flex flex-col h-svh">
-  <main class="container mx-auto flex-1">
-    <slot />
-  </main>
-  <nav class="py-4 border-t border-t-slate-800">
-    <UContainer class="flex justify-between items-center">
-      <ul class="flex gap-4">
-        <ULink to="/">Groups</ULink>
-        <template v-if="user">
-          <ULink :to="{ name: 'group_id-tags', params: { group_id: groupId } }">Tags</ULink>
-          <ULink :to="{ name: 'group_id-categories', params: { group_id: groupId } }">Categories</ULink>
-          <!-- <ULink :to="{ name: 'group_id-transactions', params: { group_id: groupId } }">Transactions</ULink> -->
-          <!-- <ULink :to="{ name: 'group_id-invitations', params: { group_id: groupId } }">Invitations</ULink> -->
+  <div class="flex flex-col h-svh">
+    <main class="container mx-auto flex-1">
+      <slot />
+    </main>
+    <nav class="py-4 border-t border-t-slate-800">
+      <UContainer class="flex justify-between items-center">
+        <ul class="flex gap-4">
+          <template v-if="user">
+            <ULink :to="{ name: 'group_id', params: { group_id: groupId } }">Group</ULink>
+            <ULink :to="{ name: 'group_id-tags', params: { group_id: groupId } }">Tags</ULink>
+            <ULink :to="{ name: 'group_id-categories', params: { group_id: groupId } }">Categories</ULink>
+            <!-- <ULink :to="{ name: 'group_id-transactions', params: { group_id: groupId } }">Transactions</ULink> -->
+            <!-- <ULink :to="{ name: 'group_id-invitations', params: { group_id: groupId } }">Invitations</ULink> -->
 
-        </template>
-        <template v-else>
-          <ULink to="/register">Register</ULink>
-          <ULink to="/login">Login</ULink>
-        </template>
-      </ul>
-      <div class="flex items-center gap-x-4">
-        <UButton v-if="user" type="button" variant="link" :ui="{ base: 'cursor-pointer' }" @click="logout">Logout
-        </UButton>
-        <ColorModeButton />
-      </div>
-    </UContainer>
+          </template>
+          <template v-else>
+            <ULink to="/register">Register</ULink>
+            <ULink to="/login">Login</ULink>
+          </template>
+        </ul>
+        <div class="flex items-center gap-x-4">
+          <UButton v-if="user" type="button" variant="link" :ui="{ base: 'cursor-pointer' }" @click="logout">Logout
+          </UButton>
+          <ColorModeButton />
+        </div>
+      </UContainer>
 
-  </nav>
+    </nav>
   </div>
 </template>
 <script setup lang="ts">

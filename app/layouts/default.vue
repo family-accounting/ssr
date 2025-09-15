@@ -1,5 +1,5 @@
 <template>
-<div class="flex flex-col h-screen">
+<div class="flex flex-col h-svh">
   <main class="container mx-auto flex-1">
     <slot />
   </main>

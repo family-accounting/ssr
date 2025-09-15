@@ -1,23 +1,28 @@
 <template>
-  <nav class="py-4 border-b">
-    <div class="container mx-auto flex justify-between items-center">
+<div class="flex flex-col h-screen">
+  <main class="container mx-auto flex-1">
+    <slot />
+  </main>
+  <nav class="py-4 border-t border-t-slate-800">
+    <UContainer class="flex justify-between items-center">
       <ul class="flex gap-4">
-        <ULink to="/">Home</ULink>
+        <ULink to="/">Groups</ULink>
         <template v-if="user">
-          <ULink to="/create">Create Group</ULink>
-          <UButton type="button" variant="link" :ui="{ base: 'cursor-pointer' }" @click="logout">Logout</UButton>
+          <ULink to="/settings">Settings</ULink>
         </template>
         <template v-else>
           <ULink to="/register">Register</ULink>
           <ULink to="/login">Login</ULink>
         </template>
       </ul>
-      <ColorModeButton />
-    </div>
+      <div class="flex items-center gap-x-4">
+        <UButton v-if="user" type="button" variant="link" :ui="{ base: 'cursor-pointer' }" @click="logout">Logout
+        </UButton>
+        <ColorModeButton />
+      </div>
+    </UContainer>
   </nav>
-  <main class="container mx-auto">
-    <slot />
-  </main>
+</div>
 </template>
 <script setup lang="ts">
 const supabase = useSupabaseClient();
@@ -30,3 +35,6 @@ const logout = async () => {
   router.push("/login");
 };
 </script>
+<style>
+
+</style>

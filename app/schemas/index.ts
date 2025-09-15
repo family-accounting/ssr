@@ -60,7 +60,7 @@ export const updateGroupData = {} as IUpdateGroup
 // ====================
 export const transactionSchema = z.object({
     id: z.uuid(),
-    group_id: z.number().int(),
+    group_id: z.uuid(),
     user_id: z.uuid(),
     amount: z.number().min(1),
     type: z.enum(["income", "expense"]),

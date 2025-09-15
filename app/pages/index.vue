@@ -47,13 +47,36 @@ const deleteGroup = async (id: string) => {
 };
 </script>
 <template>
-  <div>
-    <UButton type="button" variant="link" color="primary" to="/create"
-      >Create Group</UButton
-    >
-    <USeparator :ui="{ root: 'my-4' }" />
-    <section class="space-y-4 py-4">
-      <UCard
+
+  <section class="py-12">
+    <UContainer>
+      <h1 class="mb-4">Groups</h1>
+
+      <UModal v-model:open="isOpen" :ui="{ body: 'sm:max-w-md p-4' }">
+        <template #title>
+          <div class="flex items-center gap-x-2 text-red-400">
+            <UIcon name="i-heroicons-trash" />
+            Delete Group
+          </div>
+        </template>
+        <template #description>
+          <p class="text-white py-4">
+            Are you sure you want to delete "{{ selectedGroup?.description }}" ?
+          </p>
+        </template>
+        <template #footer>
+          <UButton
+            variant="solid"
+            color="error"
+            @click="deleteGroup(selectedGroup?.id)"
+          >
+            Confirm
+          </UButton>
+        </template>
+      </UModal>
+      <div class="space-y-4">
+      
+        <UCard
         v-for="group in groups"
         :key="group.id"
         :ui="{ footer: 'flex justify-end gap-x-4' }"
@@ -87,30 +110,16 @@ const deleteGroup = async (id: string) => {
             >Delete
           </UButton>
         </template>
-      </UCard>
+      </UCard>  
+      </div>
 
-      <UModal v-model:open="isOpen" :ui="{ body: 'sm:max-w-md p-4' }">
-        <template #title>
-          <div class="flex items-center gap-x-2 text-red-400">
-            <UIcon name="i-heroicons-trash" />
-            Delete Group
-          </div>
-        </template>
-        <template #description>
-          <p class="text-white py-4">
-            Are you sure you want to delete "{{ selectedGroup?.description }}" ?
-          </p>
-        </template>
-        <template #footer>
-          <UButton
-            variant="solid"
-            color="error"
-            @click="deleteGroup(selectedGroup?.id)"
-          >
-            Confirm
-          </UButton>
-        </template>
-      </UModal>
-    </section>
-  </div>
+
+      <USeparator :ui="{root: '!my-12'}" />
+
+      <UButton type="button" variant="link" color="primary" to="/create" icon="i-heroicons-plus">Create Group</UButton>
+
+    
+    </UContainer>
+  </section>
+
 </template>

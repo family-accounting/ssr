@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { FormSubmitEvent } from "@nuxt/ui";
 import { transactionSchema } from "~/schemas";
 import type {
   IGroup,
@@ -96,6 +97,24 @@ const types = ref([
   { value: "income", label: "واریز" },
   { value: "expense", label: "برداشت" },
 ]);
+
+const onSubmit = async (event: FormSubmitEvent<ITransaction>) => {
+  const { error } = await supabase.from("transactions").insert(event.data);
+  if (error) {
+    toast.add({
+      title: `Error: ${error.code}`,
+      description: error.message,
+      color: "error",
+    });
+  }
+  else {
+    toast.add({
+      title: "Success",
+      description: "Transaction created successfully",
+      color: "success",
+    });
+  }
+};
 </script>
 <template>
   <section class="py-12">
@@ -104,67 +123,30 @@ const types = ref([
       <UCard v-else>
         <h1>{{ groupData.title }}</h1>
         <p>{{ groupData.description }}</p>
-        <p>{{ groupData.owner_id }}</p>
-        <p>{{ groupData }}</p>
+
       </UCard>
       <USeparator />
-      <div class="">
-        <h2>Users</h2>
-        <p>{{ usersData }}</p>
-      </div>
-      <USeparator />
-      <div class="">
-        <h2>Tags</h2>
-        <p>{{ tags }}</p>
-      </div>
-      <USeparator />
 
-      <div class="">
-        <h2>Transactions</h2>
-        <p>{{ transactions }}</p>
-      </div>
-      <UForm :state="transactionData" :schema="transactionSchema"></UForm>
-      <UFormField label="Amount" name="amount">
-        <UInput
-          type="number"
-          v-model="transactionData.amount"
-          :ui="{ root: 'w-full' }"
-        />
-      </UFormField>
-      <UFormField label="Type" name="type">
-        <USelect
-          v-model="transactionData.type"
-          :items="types"
-          :ui="{ base: 'w-full' }"
-          value-key="value"
-          label-key="label"
-        />
-      </UFormField>
-      <UFormField label="Description" name="description">
-        <UInput
-          v-model="transactionData.description"
-          :ui="{ root: 'w-full' }"
-        />
-      </UFormField>
-      <UFormField label="Category" name="category_id">
-        <USelect
-          v-model="transactionData.category_id"
-          :items="categories"
-          value-key="id"
-          label-key="name"
-          :ui="{ base: 'w-full' }"
-        />
-      </UFormField>
-      <UFormField label="Tag" name="tag_ids">
-        <USelect
-          multiple
-          v-model="transactionData.tag_ids"
-          :items="tags"
-          value-key="id"
-          label-key="name"
-          :ui="{ base: 'w-full' }"
-        />
-      </UFormField>
+      <UForm :state="transactionData" :schema="transactionSchema" @submit="onSubmit" class="space-y-4">
+        <UFormField label="Amount" name="amount">
+          <UInput type="number" v-model="transactionData.amount" :ui="{ root: 'w-full' }" />
+        </UFormField>
+        <UFormField label="Type" name="type">
+          <USelect v-model="transactionData.type" :items="types" :ui="{ base: 'w-full' }" value-key="value"
+            label-key="label" />
+        </UFormField>
+        <UFormField label="Description" name="description">
+          <UInput v-model="transactionData.description" :ui="{ root: 'w-full' }" />
+        </UFormField>
+        <UFormField label="Category" name="category_id">
+          <USelect v-model="transactionData.category_id" :items="categories" value-key="id" label-key="name"
+            :ui="{ base: 'w-full' }" />
+        </UFormField>
+        <UFormField label="Tag" name="tag_ids">
+          <USelect multiple v-model="transactionData.tag_ids" :items="tags" value-key="id" label-key="name"
+            :ui="{ base: 'w-full' }" />
+        </UFormField>
+      </UForm>
     </UContainer>
   </section>
 </template>

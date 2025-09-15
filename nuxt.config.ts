@@ -14,12 +14,5 @@ export default defineNuxtConfig({
     'nuxt-lodash',
     '@compodium/nuxt',
   ],
-  ssr: false,
-  ui: {
-    theme: {
-      defaultVariants: {
-        size: 'lg'
-      }
-    }
-  }
+
 })

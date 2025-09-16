@@ -5,6 +5,7 @@
     </main>
     <nav class="py-4 border-t border-t-slate-800">
       <UContainer class="flex justify-between items-center">
+        <ULink :to="{ name: 'group_id', params: { group_id: groupId } }">Groups</ULink>
         <ul class="flex gap-4">
           <template v-if="user">
             <ULink :to="{ name: 'group_id', params: { group_id: groupId } }">Group</ULink>

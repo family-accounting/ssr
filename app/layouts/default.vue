@@ -19,12 +19,14 @@
         <UButton v-if="user" type="button" variant="link" :ui="{ base: 'cursor-pointer' }" @click="logout">Logout
         </UButton>
         <ColorModeButton />
+        {{ version }}
       </div>
     </UContainer>
   </nav>
 </div>
 </template>
 <script setup lang="ts">
+const { version } = useRuntimeConfig();
 const supabase = useSupabaseClient();
 const {
   data: { user },

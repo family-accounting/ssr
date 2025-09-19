@@ -52,8 +52,27 @@ export const groupListData = [] as IGroupList
 export const createGroupData = {} as ICreateGroup
 export const updateGroupData = {} as IUpdateGroup
 
+//currencies
+export const currencySchema = z.object({
+    id: z.uuid(),
+    name: z.string().min(1),
+    symbol: z.string().min(1),
+    created_at: z.string(),
+    updated_at: z.string()
+});
 
-
+//wallets
+export const walletSchema = z.object({
+    id: z.uuid(),
+    group_id: z.uuid(),
+    user_id: z.uuid(),
+    name: z.string().min(1),
+    description: z.string().optional(),
+    currency_id: z.uuid(),
+    balance: z.number().default(0),
+    created_at: z.string(),
+    updated_at: z.string()
+});
 
 // ====================
 // Transactions

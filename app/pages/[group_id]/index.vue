@@ -147,6 +147,10 @@ const onSubmit = async (event: FormSubmitEvent<ITransaction>) => {
           <USelect multiple v-model="transactionData.tag_ids" :items="tags" value-key="id" label-key="name"
             :ui="{ base: 'w-full' }" />
         </UFormField>
+
+        <UButton type="submit" variant="solid" color="primary" :loading="loading" block :ui="{ base: 'cursor-pointer' }">
+          {{ loading ? "please wait..." : "Create Transaction" }}
+        </UButton>
       </UForm>
     </UContainer>
   </section>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { IGroupList, IGroup } from "~/schemas";
+import type { IGroup } from "~/schemas";
 
 const supabase = useSupabaseClient();
-const groups = ref<IGroupList>([]);
+const groups = ref<IGroup[]>([]);
 
 const fetchGroups = async () => {
   const { data, error }: { data: IGroup[] | null; error: any } = await supabase
@@ -81,7 +81,7 @@ const deleteGroup = async (id: string) => {
         :key="group.id"
         :ui="{ footer: 'flex justify-end gap-x-4' }"
       >
-        <h2>{{ group.title }}</h2>
+        <h2>{{ group.name }}</h2>
         <p>{{ group.description }}</p>
         <template #footer>
           <UButton

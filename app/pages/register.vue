@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
-import { registerSchema } from "~/schemas";
-import type { IRegister } from "~/types";
+import { RegisterSchema } from "~/schemas";
+import type { IRegister } from "~/schemas";
 definePageMeta({
   layout: "auth",
 });
@@ -44,7 +44,7 @@ const onSubmit = async (event: FormSubmitEvent<IRegister>) => {
     </template>
     <UForm
       id="register-form"
-      :schema="registerSchema"
+      :schema="RegisterSchema"
       :state="registerData"
       class="space-y-4"
       @submit="onSubmit"

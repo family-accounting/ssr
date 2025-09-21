@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
-import { loginSchema } from "~/schemas";
-import type { ILogin } from "~/types";
+import { LoginSchema } from "~/schemas";
+import type { ILogin } from "~/schemas";
 definePageMeta({
   layout: "auth",
 });
@@ -43,7 +43,7 @@ const onSubmit = async (event: FormSubmitEvent<ILogin>) => {
 
     <UForm
       id="login-form"
-      :schema="loginSchema"
+      :schema="LoginSchema"
       :state="loginData"
       class="space-y-4"
       @submit="onSubmit"

@@ -42,13 +42,8 @@ const onSubmit = async (event: FormSubmitEvent<IRegister>) => {
     <template #header>
       <h1>Register</h1>
     </template>
-    <UForm
-      id="register-form"
-      :schema="RegisterSchema"
-      :state="registerData"
-      class="space-y-4"
-      @submit="onSubmit"
-    >
+    <UForm id="register-form" :schema="RegisterSchema" :state="registerData" class="space-y-4"
+      @submit.prevent="onSubmit">
       <UFormField label="Phone" name="phone">
         <UInput v-model="registerData.phone" :ui="{ root: 'w-full' }" />
       </UFormField>
@@ -57,37 +52,20 @@ const onSubmit = async (event: FormSubmitEvent<IRegister>) => {
       </UFormField>
 
       <UFormField label="Password" name="password">
-        <UInput
-          v-model="registerData.password"
-          type="password"
-          :ui="{ root: 'w-full' }"
-        />
+        <UInput v-model="registerData.password" type="password" :ui="{ root: 'w-full' }" />
       </UFormField>
 
       <UFormField label="Confirm Password" name="confirmPassword">
-        <UInput
-          v-model="registerData.confirmPassword"
-          type="password"
-          :ui="{ root: 'w-full' }"
-        />
+        <UInput v-model="registerData.confirmPassword" type="password" :ui="{ root: 'w-full' }" />
       </UFormField>
     </UForm>
 
     <template #footer>
-      <UButton
-        form="register-form"
-        type="submit"
-        variant="solid"
-        color="primary"
-        :loading="loading"
-        block
-      >
+      <UButton form="register-form" type="submit" variant="solid" color="primary" :loading="loading" block>
         {{ loading ? "please wait..." : "Register" }}
       </UButton>
       <USeparator orientation="horizontal" type="dashed" />
-      <UButton type="button" variant="link" to="/login" color="primary"
-        >Login</UButton
-      >
+      <UButton type="button" variant="link" to="/login" color="primary">Login</UButton>
     </template>
   </UCard>
 </template>

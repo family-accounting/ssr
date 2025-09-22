@@ -15,6 +15,8 @@ const toast = useToast();
 const loading = ref(false);
 const router = useRouter();
 const onSubmit = async (event: FormSubmitEvent<ILogin>) => {
+  console.log(event.data);
+  
   loading.value = true;
   const { error } = await supabase.auth.signInWithPassword(event.data);
   if (error) {
@@ -40,47 +42,24 @@ const onSubmit = async (event: FormSubmitEvent<ILogin>) => {
     <template #header>
       <h1>Login</h1>
     </template>
-
-    <UForm
-      id="login-form"
-      :schema="LoginSchema"
-      :state="loginData"
-      class="space-y-4"
-      @submit="onSubmit"
-    >
+    <UForm id="login-form" :schema="LoginSchema" :state="loginData" class="space-y-4" @submit.prevent="onSubmit">
       <UFormField label="Email" name="email">
         <UInput v-model="loginData.email" :ui="{ root: 'w-full' }" />
       </UFormField>
 
       <UFormField label="Password" name="password">
-        <UInput
-          v-model="loginData.password"
-          type="password"
-          :ui="{ root: 'w-full' }"
-        />
+        <UInput v-model="loginData.password" type="password" :ui="{ root: 'w-full' }" />
       </UFormField>
     </UForm>
     <template #footer>
-      <UButton
-        form="login-form"
-        type="submit"
-        variant="solid"
-        color="primary"
-        :loading="loading"
-        block
-        :ui="{ base: 'cursor-pointer' }"
-      >
-        {{ loading ? "please wait..." : "Login" }}
+      <UButton form="login-form" type="submit" variant="solid" color="primary" :loading="loading" block
+        :ui="{ base: 'cursor-pointer' }">
+        {{ loading ? "Please wait..." : "Login" }}
       </UButton>
       <USeparator orientation="horizontal" type="dashed" :ui="{ root: '' }" />
-      <UButton
-        type="button"
-        variant="link"
-        to="/register"
-        color="primary"
-        :ui="{}"
-        >Register</UButton
-      >
+   
+
+      <UButton type="button" variant="link" to="/register" color="primary" >Register</UButton>
     </template>
   </UCard>
 </template>

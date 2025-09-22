@@ -3,25 +3,24 @@ import { z } from 'zod';
 
 export const UserSchema = z.object({
   id: z.uuid(),
-    email: z.email(),
-  password: z.string().min(8, 'رمز عبور باید حداقل 8 کاراکتر باشد'),
-    phone: z.string().min(10, 'شماره تلفن باید حداقل 10 رقم باشد'),
-    confirmPassword: z.string().min(8, 'رمز عبور باید حداقل 8 کاراکتر باشد'),
+  email: z.email(),
+  password: z.string().min(8),
+  phone: z.string().min(10),
+  confirmPassword: z.string().min(8),
   created_at: z.iso.datetime({ offset: true }),
   updated_at: z.iso.datetime({ offset: true }),
 });
 
 export const RegisterSchema = z.object({
   email: z.email(),
-    password: z.string().min(8, 'رمز عبور باید حداقل 8 کاراکتر باشد'),
-    phone: z.string().min(10, 'شماره تلفن باید حداقل 10 رقم باشد'),
-    confirmPassword: z.string().min(8, 'رمز عبور باید حداقل 8 کاراکتر باشد'),
+  password: z.string().min(8),
+  phone: z.string().min(10),
+  confirmPassword: z.string().min(8),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: 'رمز عبور و تایید رمز عبور مطابقت ندارند',
   path: ['confirmPassword'],
 });
 
-export const LoginSchema = RegisterSchema.pick({ email: true, password: true , confirmPassword: true});
+export const LoginSchema = RegisterSchema.pick({ email: true, password: true });
 // Schema برای users
 
 // Schema برای groups

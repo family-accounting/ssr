@@ -5,6 +5,7 @@ import type { FormSubmitEvent } from "@nuxt/ui";
 
 definePageMeta({
   layout: "group",
+  middleware: 'auth'
 });
 
 const supabase = useSupabaseClient();

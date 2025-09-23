@@ -8,7 +8,7 @@
       <ul class="flex gap-4">
         <ULink to="/">Groups</ULink>
         <template v-if="user">
-          <ULink to="/settings">Settings</ULink>
+          <ULink to="/wallets">Wallets</ULink>
         </template>
         <template v-else>
           <ULink to="/register">Register</ULink>
@@ -26,7 +26,7 @@
 </div>
 </template>
 <script setup lang="ts">
-const { version } = useRuntimeConfig();
+const { public: { version } } = useRuntimeConfig();
 const supabase = useSupabaseClient();
 const {
   data: { user },

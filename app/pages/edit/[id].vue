@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type { IUpdateGroup } from "~/types";
-import { updateGroupSchema } from "~/schemas";
+import { UpdateGroupSchema, type IUpdateGroup } from "~/schemas";
 import type { FormSubmitEvent } from "@nuxt/ui";
 
-definePageMeta({ layout: "default" });
+definePageMeta({ 
+  layout: "default",
+});
 
 const supabase = useSupabaseClient();
 const route = useRoute();
@@ -27,11 +28,14 @@ const { data, error } = await useAsyncData(`group-${id}`, async () => {
 });
 
 if (error.value) {
-  toast.add({
-    title: `Error: ${error.value.code}`,
-    description: error.value.message,
-    color: "error",
-  });
+  // Only show toast on client side to avoid hydration mismatch
+  if (process.client) {
+    toast.add({
+      title: `Error: ${error.value.code}`,
+      description: error.value.message,
+      color: "error",
+    });
+  }
 } else if (data.value) {
   const { created_at, updated_at, owner_id, ...rest } = data.value;
   editGroupData.value = rest;
@@ -70,13 +74,13 @@ const onSubmit = async (event: FormSubmitEvent<IUpdateGroup>) => {
     <UCard>
       <UForm
         id="update-group-form"
-        :schema="updateGroupSchema"
+        :schema="UpdateGroupSchema"
         :state="editGroupData"
         class="space-y-4"
         @submit="onSubmit"
       >
-        <UFormField label="Title" name="title">
-          <UInput v-model="editGroupData.title" :ui="{ root: 'w-full' }" />
+        <UFormField label="Name" name="name">
+          <UInput v-model="editGroupData.name" :ui="{ root: 'w-full' }" />
         </UFormField>
 
         <UFormField label="Description" name="description">

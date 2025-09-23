@@ -1,0 +1,245 @@
+-- ===============================
+-- 1️⃣ ریست کل دیتابیس
+-- ===============================
+drop schema public cascade;
+create schema public;
+set search_path = public;
+
+-- ===============================
+-- 2️⃣ تعریف Enumها
+-- ===============================
+create type transaction_type as enum ('income', 'expense', 'transfer');
+create type currency_type as enum ('USD', 'EUR', 'IRR');
+create type invitation_status as enum ('pending', 'accepted', 'rejected');
+
+-- ===============================
+-- 3️⃣ جدول Profiles
+-- ===============================
+create table profiles (
+    id uuid primary key references auth.users(id),
+    first_name text default '',
+    last_name text default '',
+    avatar_url text default '',
+    created_at timestamp default now(),
+    updated_at timestamp
+);
+
+create index idx_profiles_first_name on profiles(first_name);
+create index idx_profiles_last_name on profiles(last_name);
+
+-- ===============================
+-- 4️⃣ جدول Groups
+-- ===============================
+create table groups (
+    id uuid primary key default gen_random_uuid(),
+    owner_id uuid references profiles(id),
+    name text not null,
+    description text,
+    color text,
+    icon text,
+    created_at timestamp default now(),
+    updated_at timestamp,
+    constraint unique_owner_group unique(owner_id, name)
+);
+
+create index idx_groups_owner on groups(owner_id);
+create index idx_groups_name on groups(name);
+
+-- ===============================
+-- 5️⃣ جدول Wallets
+-- ===============================
+create table wallets (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid references profiles(id),
+    name text not null,
+    description text,
+    color text,
+    icon text,
+    currency currency_type not null,
+    balance decimal(10,2) default 0,
+    created_at timestamp default now(),
+    updated_at timestamp,
+    constraint unique_user_wallet unique(user_id, name)
+);
+
+create index idx_wallets_user on wallets(user_id);
+create index idx_wallets_name on wallets(name);
+
+-- ===============================
+-- 6️⃣ جدول User_Group با wallet انتخابی
+-- ===============================
+create table user_group (
+    user_id uuid references profiles(id),
+    group_id uuid references groups(id),
+    wallet_id uuid references wallets(id),
+    created_at timestamp default now(),
+    primary key(user_id, group_id),
+    constraint unique_user_group_wallet unique(user_id, group_id, wallet_id)
+);
+
+-- Trigger برای اطمینان از مالکیت کیف‌پول
+create function public.check_wallet_user()
+returns trigger as $$
+begin
+    if (select user_id from wallets where id = new.wallet_id) <> new.user_id then
+        raise exception 'Wallet does not belong to user';
+    end if;
+    return new;
+end;
+$$ language plpgsql;
+
+create trigger trg_check_wallet_user
+before insert or update on user_group
+for each row
+execute function public.check_wallet_user();
+
+create index idx_user_group_user on user_group(user_id);
+create index idx_user_group_group on user_group(group_id);
+
+-- ===============================
+-- 7️⃣ جدول Invitation
+-- ===============================
+create table invitation (
+    id uuid primary key default gen_random_uuid(),
+    group_id uuid references groups(id),
+    email text not null,
+    status invitation_status default 'pending',
+    sent_at timestamp,
+    created_at timestamp default now(),
+    updated_at timestamp
+);
+
+create index idx_invitation_group on invitation(group_id);
+create index idx_invitation_email on invitation(email);
+create index idx_invitation_status on invitation(status);
+
+-- ===============================
+-- 8️⃣ جدول Categories و Tags
+-- ===============================
+create table categories (
+    id uuid primary key default gen_random_uuid(),
+    group_id uuid references groups(id),
+    name text not null,
+    description text,
+    color text,
+    icon text,
+    created_at timestamp default now(),
+    updated_at timestamp,
+    constraint unique_group_category unique(group_id, name)
+);
+
+create table tags (
+    id uuid primary key default gen_random_uuid(),
+    group_id uuid references groups(id),
+    name text not null,
+    description text,
+    color text,
+    icon text,
+    created_at timestamp default now(),
+    updated_at timestamp,
+    constraint unique_group_tag unique(group_id, name)
+);
+
+create index idx_categories_group on categories(group_id);
+create index idx_tags_group on tags(group_id);
+
+-- ===============================
+-- 9️⃣ جدول Transactions و Transaction_Tag
+-- ===============================
+create table transactions (
+    id uuid primary key default gen_random_uuid(),
+    amount decimal(10,2) not null,
+    type transaction_type not null,
+    from_wallet_id uuid references wallets(id) not null,
+    to_wallet_id uuid references wallets(id),
+    group_id uuid references groups(id),
+    category_id uuid references categories(id),
+    description text,
+    name text,
+    color text,
+    icon text,
+    created_at timestamp default now(),
+    updated_at timestamp,
+    check (
+        (type = 'transfer' and to_wallet_id is not null)
+        or type in ('income', 'expense')
+    )
+);
+
+create table transaction_tag (
+    transaction_id uuid references transactions(id),
+    tag_id uuid references tags(id),
+    created_at timestamp default now(),
+    primary key(transaction_id, tag_id)
+);
+
+create index idx_transactions_group on transactions(group_id);
+create index idx_transactions_category on transactions(category_id);
+create index idx_transactions_from_wallet on transactions(from_wallet_id);
+create index idx_transactions_to_wallet on transactions(to_wallet_id);
+create index idx_transactions_type on transactions(type);
+create index idx_transactions_created_at on transactions(created_at);
+
+create index idx_transaction_tag_tag on transaction_tag(tag_id);
+create index idx_transaction_tag_transaction on transaction_tag(transaction_id);
+
+-- ===============================
+-- 🔟 Roles و Permissions
+-- ===============================
+create table roles (
+    id uuid primary key default gen_random_uuid(),
+    name text not null,
+    description text,
+    created_at timestamp default now(),
+    updated_at timestamp,
+    constraint unique_role unique(name)
+);
+
+create table permissions (
+    id uuid primary key default gen_random_uuid(),
+    name text not null,
+    description text,
+    created_at timestamp default now(),
+    updated_at timestamp,
+    constraint unique_permission unique(name)
+);
+
+create table role_permission (
+    role_id uuid references roles(id),
+    permission_id uuid references permissions(id),
+    created_at timestamp default now(),
+    primary key(role_id, permission_id)
+);
+
+create table user_role (
+    user_id uuid references profiles(id),
+    role_id uuid references roles(id),
+    group_id uuid references groups(id),
+    created_at timestamp default now(),
+    primary key(user_id, role_id, group_id)
+);
+
+create index idx_user_role_user on user_role(user_id);
+create index idx_user_role_group on user_role(group_id);
+create index idx_user_role_role on user_role(role_id);
+
+create index idx_role_permission_role on role_permission(role_id);
+create index idx_role_permission_permission on role_permission(permission_id);
+
+-- ===============================
+-- 11️⃣ Trigger برای ایجاد خودکار Profile
+-- ===============================
+create function public.create_profile()
+returns trigger as $$
+begin
+    insert into public.profiles (id, created_at)
+    values (new.id, now());
+    return new;
+end;
+$$ language plpgsql;
+
+create trigger create_profile_after_confirm
+after update on auth.users
+for each row
+when (old.confirmed_at is null and new.confirmed_at is not null)
+execute function public.create_profile();

@@ -1,125 +1,39 @@
+<template>
+  <section class="py-12">
+      <UContainer>
+          <h1 class="mb-4">Groups</h1>
+
+          {{ groups }}
+      </UContainer>
+  </section>
+</template>
 <script setup lang="ts">
-import type { IGroup } from "~/schemas";
+import type { IGroup } from '~/schemas';
+
+
 
 const supabase = useSupabaseClient();
+const toast = useToast();
 const groups = ref<IGroup[]>([]);
 
-const fetchGroups = async () => {
-  const { data, error }: { data: IGroup[] | null; error: any } = await supabase
-    .from("groups")
-    .select("*");
-  if (error) {
-    toast.add({
-      title: `Error: ${error.code}`,
-      description: error.message,
-      color: "error",
-    });
-  } else {
-    groups.value = data || [];
-  }
-};
-await fetchGroups();
+// user wallets
+const { data: userData } = await supabase.auth.getUser();
+const { data, error } = await supabase
+  .from('groups')
+  .select(`
+    *,
+    user_groups:user_groups(user_id)
+  `)
+  .eq('user_groups.user_id', userData.user?.id as string);
 
-const isOpen = ref(false);
-const selectedGroup = ref<IGroup>({} as IGroup);
-const openDeleteModal = (group: IGroup) => {
-  isOpen.value = true;
-  selectedGroup.value = group;
-};
-const toast = useToast();
-const deleteGroup = async (id: string) => {
-  const { error } = await supabase.from("groups").delete().eq("id", id);
-  if (error) {
-    toast.add({
+if (error) {
+  toast.add({
       title: `Error: ${error.code}`,
       description: error.message,
       color: "error",
-    });
-  } else {
-    toast.add({
-      title: "Success",
-      description: "Group deleted successfully",
-      color: "success",
-    });
-    isOpen.value = false;
-    await fetchGroups();
-  }
-};
+  });
+} else {
+  groups.value = data;
+}
+
 </script>
-<template>
-
-  <section class="py-12">
-    <UContainer>
-      <h1 class="mb-4">Groups</h1>
-
-      <UModal v-model:open="isOpen" :ui="{ body: 'sm:max-w-md p-4' }">
-        <template #title>
-          <div class="flex items-center gap-x-2 text-red-400">
-            <UIcon name="i-heroicons-trash" />
-            Delete Group
-          </div>
-        </template>
-        <template #description>
-          <p class="text-white py-4">
-            Are you sure you want to delete "{{ selectedGroup?.description }}" ?
-          </p>
-        </template>
-        <template #footer>
-          <UButton
-            variant="solid"
-            color="error"
-            @click="deleteGroup(selectedGroup?.id)"
-          >
-            Confirm
-          </UButton>
-        </template>
-      </UModal>
-      <div class="space-y-4">
-      
-        <UCard
-        v-for="group in groups"
-        :key="group.id"
-        :ui="{ footer: 'flex justify-end gap-x-4' }"
-      >
-        <h2>{{ group.name }}</h2>
-        <p>{{ group.description }}</p>
-        <template #footer>
-          <UButton
-            icon="i-heroicons-eye"
-            type="button"
-            variant="solid"
-            color="primary"
-            :to="{ name: 'group_id', params: { group_id: group.id } }"
-            >View</UButton
-          >
-          <UButton
-            icon="i-heroicons-pencil"
-            type="button"
-            variant="solid"
-            color="primary"
-            :to="{ name: 'edit-id', params: { id: group.id } }"
-            >Edit
-          </UButton>
-          <UButton
-            icon="i-heroicons-trash"
-            type="button"
-            :ui="{ base: 'cursor-pointer' }"
-            variant="solid"
-            color="error"
-            @click="openDeleteModal(group)"
-            >Delete
-          </UButton>
-        </template>
-      </UCard>  
-      </div>
-
-
-      <USeparator :ui="{root: '!my-12'}" />
-
-      <UButton type="button" variant="link" color="primary" to="/create" icon="i-heroicons-plus">Create Group</UButton>
-
-    
-    </UContainer>
-  </section>
-
-</template>

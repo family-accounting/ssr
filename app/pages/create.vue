@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { ICreateGroup } from "~/types";
-import { createGroupSchema } from "~/schemas";
+import type { ICreateGroup } from "~/schemas";
+import { CreateGroupSchema } from "~/schemas";
 import type { FormSubmitEvent } from "@nuxt/ui";
 
 definePageMeta({
@@ -11,7 +11,7 @@ const {
   data: { user },
 } = await supabase.auth.getUser();
 const createGroupData = reactive<Partial<ICreateGroup>>({
-  title: "",
+  name: "",
   description: "",
   owner_id: user?.id,
 }) as ICreateGroup;
@@ -42,7 +42,7 @@ const onSubmit = async (event: FormSubmitEvent<ICreateGroup>) => {
     <UCard>
       <UForm
         id="create-group-form"
-        :schema="createGroupSchema"
+        :schema="CreateGroupSchema"
         :state="createGroupData"
         class="space-y-4"
         @submit.prevent="onSubmit"

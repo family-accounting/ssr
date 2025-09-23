@@ -3,6 +3,7 @@ import type { ITagList } from "~/schemas";
 
 definePageMeta({
   layout: "group",
+  middleware: 'auth'
 });
 
 const supabase = useSupabaseClient();
@@ -15,11 +16,14 @@ const { data, error } = await supabase
   .select("*")
   .eq("group_id", groupId.value);
 if (error) {
-  toast.add({
-    title: `Error: ${error.code}`,
-    description: error.message,
-    color: "error",
-  });
+  // Only show toast on client side to avoid hydration mismatch
+  if (process.client) {
+    toast.add({
+      title: `Error: ${error.code}`,
+      description: error.message,
+      color: "error",
+    });
+  }
 } else {
   tags.value = data;
 }

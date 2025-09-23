@@ -12,6 +12,7 @@ import type {
 
 definePageMeta({
   layout: "group",
+  middleware: 'auth'
 });
 const supabase = useSupabaseClient();
 const route = useRoute();
@@ -26,11 +27,14 @@ const { data, error } = await supabase
   .eq("id", groupId.value)
   .single();
 if (error) {
-  toast.add({
-    title: `Error: ${error.code}`,
-    description: error.message,
-    color: "error",
-  });
+  // Only show toast on client side to avoid hydration mismatch
+  if (process.client) {
+    toast.add({
+      title: `Error: ${error.code}`,
+      description: error.message,
+      color: "error",
+    });
+  }
 } else {
   groupData.value = data;
 }
@@ -40,11 +44,14 @@ const { data: users, error: usersError } = await supabase
   .select("*")
   .eq("group_id", groupId.value);
 if (usersError) {
-  toast.add({
-    title: `Error: ${usersError.code}`,
-    description: usersError.message,
-    color: "error",
-  });
+  // Only show toast on client side to avoid hydration mismatch
+  if (process.client) {
+    toast.add({
+      title: `Error: ${usersError.code}`,
+      description: usersError.message,
+      color: "error",
+    });
+  }
 } else {
   usersData.value = users;
 }
@@ -54,11 +61,14 @@ const { data: tagsData, error: tagsError } = await supabase
   .select("*")
   .eq("group_id", groupId.value);
 if (tagsError) {
-  toast.add({
-    title: `Error: ${tagsError.code}`,
-    description: tagsError.message,
-    color: "error",
-  });
+  // Only show toast on client side to avoid hydration mismatch
+  if (process.client) {
+    toast.add({
+      title: `Error: ${tagsError.code}`,
+      description: tagsError.message,
+      color: "error",
+    });
+  }
 } else {
   tags.value = tagsData;
 }
@@ -68,11 +78,14 @@ const { data: categoriesData, error: categoriesError } = await supabase
   .select("*")
   .eq("group_id", groupId.value);
 if (categoriesError) {
-  toast.add({
-    title: `Error: ${categoriesError.code}`,
-    description: categoriesError.message,
-    color: "error",
-  });
+  // Only show toast on client side to avoid hydration mismatch
+  if (process.client) {
+    toast.add({
+      title: `Error: ${categoriesError.code}`,
+      description: categoriesError.message,
+      color: "error",
+    });
+  }
 } else {
   categories.value = categoriesData;
 }
@@ -82,11 +95,14 @@ const { data: transactionsData, error: transactionsError } = await supabase
   .select("*")
   .eq("group_id", groupId.value);
 if (transactionsError) {
-  toast.add({
-    title: `Error: ${transactionsError.code}`,
-    description: transactionsError.message,
-    color: "error",
-  });
+  // Only show toast on client side to avoid hydration mismatch
+  if (process.client) {
+    toast.add({
+      title: `Error: ${transactionsError.code}`,
+      description: transactionsError.message,
+      color: "error",
+    });
+  }
 } else {
   transactions.value = transactionsData;
 }

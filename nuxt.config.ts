@@ -21,16 +21,15 @@ export default defineNuxtConfig({
     url: process.env.SUPABASE_URL,
     redirectOptions: {
       login: '/login',
-      callback: '/confirm',
+      callback: '/confirm', // ← مهم: مسیر صفحه تایید
       exclude: ['/login', '/register', '/confirm'],
-      cookieRedirect: false,
-      saveRedirectToCookie: false
     }
-  },
+  }
+,
   runtimeConfig: {
     public: {
       version: '1.0.0'
     },
 
   }
-})
+  })

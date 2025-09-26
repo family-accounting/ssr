@@ -19,11 +19,11 @@ export default defineNuxtConfig({
   supabase: {
     key: process.env.SUPABASE_KEY,
     url: process.env.SUPABASE_URL,
-    redirectOptions: {
-      login: '/login',
-      callback: '/confirm', // ← مهم: مسیر صفحه تایید
-      exclude: ['/login', '/register', '/confirm'],
-    }
+    // redirectOptions: {
+    //   login: '/login',
+    //   callback: '/confirm', // ← مهم: مسیر صفحه تایید
+    //   exclude: ['/login', '/register', '/confirm'],
+    // }
   }
 ,
   runtimeConfig: {

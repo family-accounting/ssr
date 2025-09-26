@@ -18,7 +18,14 @@ const loading = ref(false);
 const router = useRouter();
 const onSubmit = async (event: FormSubmitEvent<IRegister>) => {
   loading.value = true;
-  const { error } = await supabase.auth.signUp(event.data);
+  const { error } = await supabase.auth.signUp({
+    email: event.data.email!,
+    password: event.data.password!,
+    options: {
+      emailRedirectTo: 'http://localhost:3000/confirm'
+    }
+  })
+
   if (error) {
     toast.add({
       title: `Error: ${error.code}`,

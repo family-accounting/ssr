@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
-import { transactionSchema } from "~/schemas";
+import { CreateTransactionSchema } from "~/schemas";
 import type {
   IGroup,
   IUser,
   ITag,
-  ICategoryList,
-  ITransaction,
-  ITransactionList,
+  ICategory,
+  ICreateTransaction,
 } from "~/schemas";
 
 definePageMeta({
-  layout: "group",
-  middleware: 'auth'
+  layout: "group"
 });
 const supabase = useSupabaseClient();
 const route = useRoute();
@@ -20,7 +18,7 @@ const toast = useToast();
 const loading = ref(false);
 
 const groupData = ref<Partial<IGroup>>({} as IGroup);
-const groupId = computed(() => route.params.group_id as string);
+const groupId = computed(() => (route.params as { group_id: string }).group_id);
 const { data, error } = await supabase
   .from("groups")
   .select("*")
@@ -28,7 +26,7 @@ const { data, error } = await supabase
   .single();
 if (error) {
   // Only show toast on client side to avoid hydration mismatch
-  if (process.client) {
+  if (import.meta.client) {
     toast.add({
       title: `Error: ${error.code}`,
       description: error.message,
@@ -45,7 +43,7 @@ const { data: users, error: usersError } = await supabase
   .eq("group_id", groupId.value);
 if (usersError) {
   // Only show toast on client side to avoid hydration mismatch
-  if (process.client) {
+  if (import.meta.client) {
     toast.add({
       title: `Error: ${usersError.code}`,
       description: usersError.message,
@@ -62,7 +60,7 @@ const { data: tagsData, error: tagsError } = await supabase
   .eq("group_id", groupId.value);
 if (tagsError) {
   // Only show toast on client side to avoid hydration mismatch
-  if (process.client) {
+  if (import.meta.client) {
     toast.add({
       title: `Error: ${tagsError.code}`,
       description: tagsError.message,
@@ -72,14 +70,14 @@ if (tagsError) {
 } else {
   tags.value = tagsData;
 }
-const categories = ref<ICategoryList>([]);
+const categories = ref<ICategory[]>([]);
 const { data: categoriesData, error: categoriesError } = await supabase
   .from("categories")
   .select("*")
   .eq("group_id", groupId.value);
 if (categoriesError) {
   // Only show toast on client side to avoid hydration mismatch
-  if (process.client) {
+  if (import.meta.client) {
     toast.add({
       title: `Error: ${categoriesError.code}`,
       description: categoriesError.message,
@@ -89,14 +87,14 @@ if (categoriesError) {
 } else {
   categories.value = categoriesData;
 }
-const transactions = ref<ITransactionList>([]);
+const transactions = ref<ICreateTransaction[]>([]);
 const { data: transactionsData, error: transactionsError } = await supabase
   .from("transactions")
   .select("*")
   .eq("group_id", groupId.value);
 if (transactionsError) {
   // Only show toast on client side to avoid hydration mismatch
-  if (process.client) {
+  if (import.meta.client) {
     toast.add({
       title: `Error: ${transactionsError.code}`,
       description: transactionsError.message,
@@ -107,15 +105,20 @@ if (transactionsError) {
   transactions.value = transactionsData;
 }
 
-const transactionData = ref<Partial<ITransaction>>({} as ITransaction);
+const transactionData = ref<Partial<ICreateTransaction>>({} as ICreateTransaction);
 
 const types = ref([
   { value: "income", label: "واریز" },
   { value: "expense", label: "برداشت" },
 ]);
 
-const onSubmit = async (event: FormSubmitEvent<ITransaction>) => {
-  const { error } = await supabase.from("transactions").insert(event.data);
+const onSubmit = async (event: FormSubmitEvent<ICreateTransaction>) => {
+  const transactionData = {
+    ...event.data,
+    group_id: groupId.value
+  };
+
+  const { error } = await (supabase.from("transactions") as any).insert(transactionData);
   if (error) {
     toast.add({
       title: `Error: ${error.code}`,
@@ -137,13 +140,13 @@ const onSubmit = async (event: FormSubmitEvent<ITransaction>) => {
     <UContainer>
       <USkeleton v-if="loading" />
       <UCard v-else>
-        <h1>{{ groupData.title }}</h1>
+        <h1>{{ groupData.name }}</h1>
         <p>{{ groupData.description }}</p>
 
       </UCard>
       <USeparator />
 
-      <UForm :state="transactionData" :schema="transactionSchema" @submit="onSubmit" class="space-y-4">
+      <UForm :state="transactionData" :schema="CreateTransactionSchema" @submit="onSubmit" class="space-y-4">
         <UFormField label="Amount" name="amount">
           <UInput type="number" v-model="transactionData.amount" :ui="{ root: 'w-full' }" />
         </UFormField>
@@ -159,12 +162,9 @@ const onSubmit = async (event: FormSubmitEvent<ITransaction>) => {
           <USelect v-model="transactionData.category_id" :items="categories" value-key="id" label-key="name"
             :ui="{ base: 'w-full' }" />
         </UFormField>
-        <UFormField label="Tag" name="tag_ids">
-          <USelect multiple v-model="transactionData.tag_ids" :items="tags" value-key="id" label-key="name"
-            :ui="{ base: 'w-full' }" />
-        </UFormField>
 
-        <UButton type="submit" variant="solid" color="primary" :loading="loading" block :ui="{ base: 'cursor-pointer' }">
+        <UButton type="submit" variant="solid" color="primary" :loading="loading" block
+          :ui="{ base: 'cursor-pointer' }">
           {{ loading ? "please wait..." : "Create Transaction" }}
         </UButton>
       </UForm>
